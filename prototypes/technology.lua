@@ -78,7 +78,7 @@ while cost <= maxInt do
 			  {
 				type = "change-recipe-productivity",
 				recipe = recipe,
-				change = 0.05
+				change = prodMult
 			  })
 		end
 		data:extend({{
