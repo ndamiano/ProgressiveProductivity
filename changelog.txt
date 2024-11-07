@@ -1,0 +1,6 @@
+v0.1: Initial launch
+
+v0.2.0:
+* Added settings for base cost, cost multiplier, and productivity addition for items / fluids
+* Fixed fluids so they work, fluid cost is default 10x higher than non fluids
+* Hid technology from the players

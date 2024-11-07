@@ -1,0 +1,9 @@
+{
+    "name": "progressive-productivity",
+    "version": "0.2.0",
+    "title": "Progressive Productivity",
+    "author": "DemonicPigg",
+    "factorio_version": "2.0",
+    "dependencies": ["base >= 2.0"],
+    "description": "As you craft things, you get better at crafting them"
+}
