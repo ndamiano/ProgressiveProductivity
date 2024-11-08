@@ -4,3 +4,9 @@ v0.2.0:
 * Added settings for base cost, cost multiplier, and productivity addition for items / fluids
 * Fixed fluids so they work, fluid cost is default 10x higher than non fluids
 * Hid technology from the players
+
+v0.2.1:
+* Fixed fluid productivity, as it wasn't using the settings
+
+v0.2.2:
+* Removed fill / empty barrel recipes from the productivity as they would give infinite insanely quickly

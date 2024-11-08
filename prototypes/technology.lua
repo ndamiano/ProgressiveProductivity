@@ -1,7 +1,7 @@
 local items = {}
 local fluids = {}
 for _, recipe in pairs(data.raw["recipe"]) do
-	if recipe.results == nil then 
+	if recipe.results == nil or recipe.name:match"empty.*barrel" or recipe.name:match".+barrel" then 
 		goto continue
 	end
 	for _, product in pairs(recipe.results) do
