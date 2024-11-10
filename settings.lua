@@ -11,7 +11,7 @@ data:extend({
 		type = "double-setting",
 		name = "progressive-productivity-cost-multiplier",
 		setting_type = "startup",
-		minimum_value = 2,
+		minimum_value = 1.01,
 		default_value = 2,
 		order = "b"
 	},
@@ -36,7 +36,7 @@ data:extend({
 		type = "double-setting",
 		name = "progressive-productivity-fluid-cost-multiplier",
 		setting_type = "startup",
-		minimum_value = 2,
+		minimum_value = 1.01,
 		default_value = 2,
 		order = "e"
 	},

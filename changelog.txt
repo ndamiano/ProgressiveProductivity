@@ -15,3 +15,6 @@ v0.2.3:
 * Updated code to use appropriate cost variable for fluids
 * Added option to only enable for products that can use productivity
 * Cost Multiplier is now a double, enabling 1.5
+
+v0.2.4:
+* Set minimum for multiplier to 1.01
