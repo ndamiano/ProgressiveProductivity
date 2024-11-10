@@ -58,6 +58,7 @@ while cost <= maxInt do
 			  count = cost
 			},
 			upgrade = true,
+			hidden = true,
 			essential = false
 		}})
 	end
@@ -98,6 +99,7 @@ while cost <= maxInt do
 			  amount = cost
 			},
 			upgrade = true,
+			hidden = true,
 			essential = false
 		}})
 	end
