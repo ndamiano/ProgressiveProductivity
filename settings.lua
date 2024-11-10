@@ -1,15 +1,15 @@
 data:extend({
 	{
 		type = "int-setting",
-		name = "cost-base",
+		name = "progressive-productivity-cost-base",
 		setting_type = "startup",
 		minimum_value = 1,
 		default_value = 10,
 		order = "a"
 	},
 	{
-		type = "int-setting",
-		name = "cost-multiplier",
+		type = "double-setting",
+		name = "progressive-productivity-cost-multiplier",
 		setting_type = "startup",
 		minimum_value = 2,
 		default_value = 2,
@@ -17,7 +17,7 @@ data:extend({
 	},
 	{
 		type = "double-setting",
-		name = "productivity-addition",
+		name = "progressive-productivity-productivity-addition",
 		setting_type = "startup",
 		minimum_value = 0.001,
 		default_value = 0.05,
@@ -26,15 +26,15 @@ data:extend({
 	},
 	{
 		type = "int-setting",
-		name = "fluid-cost-base",
+		name = "progressive-productivity-fluid-cost-base",
 		setting_type = "startup",
 		minimum_value = 1,
 		default_value = 100,
 		order = "d"
 	},
 	{
-		type = "int-setting",
-		name = "fluid-cost-multiplier",
+		type = "double-setting",
+		name = "progressive-productivity-fluid-cost-multiplier",
 		setting_type = "startup",
 		minimum_value = 2,
 		default_value = 2,
@@ -42,11 +42,18 @@ data:extend({
 	},
 	{
 		type = "double-setting",
-		name = "fluid-productivity-addition",
+		name = "progressive-productivity-fluid-productivity-addition",
 		setting_type = "startup",
 		minimum_value = 0.001,
 		default_value = 0.05,
 		maximum_value = 1,
 		order = "f"
+	},
+	{
+		type = "bool-setting",
+		name = "progressive-productivity-intermediates-only",
+		setting_type = "startup",
+		default_value = true,
+		order = "g"
 	}
 })

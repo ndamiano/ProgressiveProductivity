@@ -10,3 +10,8 @@ v0.2.1:
 
 v0.2.2:
 * Removed fill / empty barrel recipes from the productivity as they would give infinite insanely quickly
+
+v0.2.3:
+* Updated code to use appropriate cost variable for fluids
+* Added option to only enable for products that can use productivity
+* Cost Multiplier is now a double, enabling 1.5

@@ -4,6 +4,10 @@ for _, recipe in pairs(data.raw["recipe"]) do
 	if recipe.results == nil or recipe.name:match"empty.*barrel" or recipe.name:match".+barrel" then 
 		goto continue
 	end
+	log(serpent.block(recipe))
+	if settings.startup["progressive-productivity-intermediates-only"].value and recipe.allow_productivity ~= true then
+		goto continue
+	end
 	for _, product in pairs(recipe.results) do
 		if product.type == "item" then
 			if items[product.name] == nil then
@@ -21,9 +25,9 @@ for _, recipe in pairs(data.raw["recipe"]) do
 	::continue::
 end
 
-local prodMult = settings.startup["productivity-addition"].value
-local costBase = settings.startup["cost-base"].value
-local costMult = settings.startup["cost-multiplier"].value
+local prodMult = settings.startup["progressive-productivity-productivity-addition"].value
+local costBase = settings.startup["progressive-productivity-cost-base"].value
+local costMult = settings.startup["progressive-productivity-cost-multiplier"].value
 local maxInt = 2^31 - 1
 local cost = costBase
 local i = 0
@@ -54,7 +58,6 @@ while cost <= maxInt do
 			  count = cost
 			},
 			upgrade = true,
-			hidden = true,
 			essential = false
 		}})
 	end
@@ -63,9 +66,9 @@ while cost <= maxInt do
 end
 
 -- Same loop, but separate for fluids, as they may have different values
-prodMult = settings.startup["fluid-productivity-addition"].value
-costBase = settings.startup["fluid-cost-base"].value
-costMult = settings.startup["fluid-cost-multiplier"].value
+prodMult = settings.startup["progressive-productivity-fluid-productivity-addition"].value
+costBase = settings.startup["progressive-productivity-fluid-cost-base"].value
+costMult = settings.startup["progressive-productivity-fluid-cost-multiplier"].value
 maxInt = 2^31 - 1
 cost = costBase
 i = 0
@@ -92,10 +95,9 @@ while cost <= maxInt do
 			{
 			  type = "craft-fluid",
 			  fluid = fluid,
-			  amount = 100 * (2^i)
+			  amount = cost
 			},
 			upgrade = true,
-			hidden = true,
 			essential = false
 		}})
 	end
