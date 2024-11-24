@@ -22,3 +22,6 @@ v0.2.4:
 v1.0.0:
 * Completely changed how the mod works. It no longer uses technologies, and instead uses production statistics
 * Added a screen to see the productivity bonus per item, viewable with CTRL + P or a shortcut button
+
+v1.0.2:
+* Fixed bug when recipe prototypes doesn't have allow_productivity
