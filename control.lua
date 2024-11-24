@@ -1,9 +1,5 @@
-
-
-local items = {}
-local fluids = {}
-
-local itemsToSkip = {''}
+storage.progressiveProductivityItems = {}
+storage.progressiveProductivityFluids = {}
 
 script.on_init(function()
     -- Get our list of item -> recipe
@@ -21,16 +17,16 @@ script.on_init(function()
         end
         for _, product in pairs(recipe.products) do
             if product.type == "item" then
-                if items[product.name] == nil then
-                    items[product.name] = {}
+                if storage.progressiveProductivityItems[product.name] == nil then
+                    storage.progressiveProductivityItems[product.name] = {}
                 end
-                table.insert(items[product.name], recipe.name)
+                table.insert(storage.progressiveProductivityItems[product.name], recipe.name)
             end
             if product.type == "fluid" then
-                if fluids[product.name] == nil then
-                    fluids[product.name] = {}
+                if storage.progressiveProductivityFluids[product.name] == nil then
+                    storage.progressiveProductivityFluids[product.name] = {}
                 end
-                table.insert(fluids[product.name], recipe.name)
+                table.insert(storage.progressiveProductivityFluids[product.name], recipe.name)
             end
         end
         ::continue::
@@ -78,7 +74,7 @@ function createCache()
         cachedFluidProduction = {}
         for surface, _ in pairs(game.surfaces) do
             -- For each item we care about
-            for item, _ in pairs(items) do
+            for item, _ in pairs(storage.progressiveProductivityItems) do
                 if not cachedItemProduction[item] then
                     cachedItemProduction[item] = 0
                 end
@@ -87,7 +83,7 @@ function createCache()
             end
             cache["item"][forceName] = cachedItemProduction
             -- Repeat the process for fluids
-            for fluid, _ in pairs(fluids) do
+            for fluid, _ in pairs(storage.progressiveProductivityFluids) do
                 if not cachedFluidProduction[fluid] then
                     cachedFluidProduction[fluid] = 0
                 end
@@ -104,7 +100,7 @@ function updateProductivity(tick)
     -- For each force
     for forceName, force in pairs(game.forces) do
         -- For each item
-        for item, recipes in pairs(items) do
+        for item, recipes in pairs(storage.progressiveProductivityItems) do
             -- Get the productivity bonus
             productivityBonus = calculateProductivityBonus("item", item, forceName, tick)
             for _, recipe in pairs(recipes) do
@@ -115,7 +111,7 @@ function updateProductivity(tick)
     end
     -- Repeat!
     for forceName, force in pairs(game.forces) do
-        for fluid, recipes in pairs(fluids) do
+        for fluid, recipes in pairs(storage.progressiveProductivityFluids) do
             productivityBonus = calculateProductivityBonus("fluid", fluid, forceName, tick)
             for _, recipe in pairs(recipes) do
                 force.recipes[recipe].productivity_bonus = productivityBonus
@@ -167,10 +163,9 @@ function createProgressiveProductivityUI(player, tick)
         name = "item-table",
         column_count = 5
     }
-    local sorted_item_names = sortItems(items, prototypes)
 
     -- Process each item in sorted order
-    for _, item in ipairs(sorted_item_names) do
+    for item, _ in pairs(storage.progressiveProductivityItems) do
         local itemFrame = table.add{
             type = "frame",
             name = "item-frame-"..item,
@@ -188,7 +183,7 @@ function createProgressiveProductivityUI(player, tick)
             caption = calculateProductivityBonus("item", item, player.force.name, tick) * 100 .. "%"
         }
     end
-    for fluid, _ in pairs(fluids) do
+    for fluid, _ in pairs(storage.progressiveProductivityFluids) do
         local itemFrame = table.add{
             type = "frame",
             name = "item-frame-"..fluid,
@@ -216,39 +211,3 @@ script.on_event(defines.events.on_gui_closed, function(event)
         toggleProgressiveProductivityUI(player)
     end
 end)
-
-function sortItems(items, prototypes)
-    -- Extract keys (item_names) into a list
-    local item_names = {}
-    for item_name, _ in pairs(items) do
-        table.insert(item_names, item_name)
-    end
-
-    -- Custom sorting function
-    table.sort(item_names, function(a, b)
-        local itemA = prototypes.item[a]
-        local itemB = prototypes.item[b]
-
-        -- Define the priority order
-        local priority_order = {
-            {itemA.group.order, itemB.group.order},
-            {itemA.group.name, itemB.group.name},
-            {itemA.subgroup.order, itemB.subgroup.order},
-            {itemA.subgroup.name, itemB.subgroup.name},
-            {itemA.order, itemB.order},
-            {itemA.name, itemB.name}
-        }
-
-        -- Compare each priority
-        for _, pair in ipairs(priority_order) do
-            if pair[1] ~= pair[2] then
-                return pair[1] < pair[2]
-            end
-        end
-
-        -- Default: equal items (shouldn't happen unless items are identical)
-        return false
-    end)
-
-    return item_names
-end
