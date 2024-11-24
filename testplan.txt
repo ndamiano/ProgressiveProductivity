@@ -15,6 +15,9 @@ New Game:
 Load that save game:
 * Does it have all the displays still in the UI?
 
+New Game with new created force (Use warp platform mod to test):
+* Does the game crash when a new game is started?
+
 Logs removed:
 * Have I removed all logs from the game? Validate with `tail -f %APPDATA%/Factorio/factorio-current.log`
 
