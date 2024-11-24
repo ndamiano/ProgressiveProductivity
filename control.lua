@@ -35,10 +35,6 @@ script.on_init(function()
         end
         ::continue::
     end
-    log("Dumping items")
-    log(serpent.block(prototypes.item["iron-ore"].group.order))
-    log(serpent.dump(prototypes.item["iron-ore"].group.name))
-    log("items dumped")
     updateProductivity(0)
 end)
 
@@ -78,8 +74,9 @@ function createCache()
     -- For each force
     for forceName, force in pairs(game.forces) do
         -- For each surface
+        cachedItemProduction = {}
+        cachedFluidProduction = {}
         for surface, _ in pairs(game.surfaces) do
-            cachedItemProduction = {}
             -- For each item we care about
             for item, _ in pairs(items) do
                 if not cachedItemProduction[item] then
@@ -90,7 +87,6 @@ function createCache()
             end
             cache["item"][forceName] = cachedItemProduction
             -- Repeat the process for fluids
-            cachedFluidProduction = {}
             for fluid, _ in pairs(fluids) do
                 if not cachedFluidProduction[fluid] then
                     cachedFluidProduction[fluid] = 0
@@ -102,10 +98,9 @@ function createCache()
     end
 end
 
--- FUUUCCCCKKK. This has an issue when recipes have multiple outputs. God damnit.
+-- TODO: Fix for when recipes have multiple products. This will cause issues.
 
 function updateProductivity(tick)
-    log("Updating Productivity on tick " .. tick)
     -- For each force
     for forceName, force in pairs(game.forces) do
         -- For each item
