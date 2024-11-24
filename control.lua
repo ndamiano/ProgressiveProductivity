@@ -34,6 +34,10 @@ script.on_init(function()
     updateProductivity(0)
 end)
 
+script.on_event("on_force_created", function(event)
+    createCache()
+end)
+
 script.on_nth_tick(300, function(event)
     updateProductivity(event.tick)
 end)
