@@ -12,10 +12,7 @@ script.on_init(function()
         if recipe.name:match".*recycling" then
             goto continue
         end
-        if not recipe.allow_productivity then
-            recipe.allow_productivity = false
-        end
-        if settings.startup["progressive-productivity-intermediates-only"].value and recipe.allow_productivity ~= true then
+        if settings.startup["progressive-productivity-intermediates-only"].value and prototypes.recipe[recipe.name].allowed_effects["productivity"] == true then
             goto continue
         end
         for _, product in pairs(recipe.products) do
