@@ -98,6 +98,7 @@ function createCache()
     end
 end
 
+local previousRun = {}
 function updateProductivity(tick)
     -- For each force
     for forceName, force in pairs(game.forces) do
@@ -109,7 +110,7 @@ function updateProductivity(tick)
             for _, recipe in pairs(recipes) do
                 -- If the current productivity bonus is higher than the recipe, we check if it's the highest one so far for this recipe
                 -- If it is, we add it to the map. Otherwise, continue
-                if force.recipes[recipe].productivity_bonus < productivityBonus then
+                if productivityBonus - force.recipes[recipe].productivity_bonus > 0.1 then
                     local result = {}
                     result["value"] = productivityBonus
                     result["item"] = item
@@ -122,7 +123,7 @@ function updateProductivity(tick)
         for fluid, recipes in pairs(storage.progressiveProductivityFluids) do
             productivityBonus = calculateProductivityBonus("fluid", fluid, forceName, tick)
             for _, recipe in pairs(recipes) do
-                if force.recipes[recipe].productivity_bonus < productivityBonus then
+                if productivityBonus - force.recipes[recipe].productivity_bonus > 0.1  then
                     local result = {}
                     result["value"] = productivityBonus
                     result["item"] = fluid
@@ -134,10 +135,15 @@ function updateProductivity(tick)
         end
         -- We have all the ones we should actually use, now update the productivity
         for recipe, result in pairs(recipeToProductivity) do
+            if (previousRun[recipe] and previousRun[result] == result) then
+                goto continue
+            end
             force.recipes[recipe].productivity_bonus = result["value"]
             local item = {"?", {"item-name."..result["item"]}, {"entity-name."..result["item"]}, {"fluid-name."..result["item"]}}
             game.print({"", {"mod-message.progressive-productivity-progressed", item, (result["value"] * 100)}})
+            ::continue::
         end
+        previousRun = recipeToProductivity
     end
 end
 
