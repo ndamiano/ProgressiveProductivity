@@ -18,3 +18,7 @@ v0.2.3:
 
 v0.2.4:
 * Set minimum for multiplier to 1.01
+
+v1.0.0:
+* Completely changed how the mod works. It no longer uses technologies, and instead uses production statistics
+* Added a screen to see the productivity bonus per item, viewable with CTRL + P or a shortcut button
