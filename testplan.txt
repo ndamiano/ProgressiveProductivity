@@ -1,0 +1,29 @@
+General test strategy is to manually go in and try each of these things:
+
+New Game:
+* Are all expected items displayed?
+* Are all items at 0
+* Does the UI show the appropriate values when 10 of an item are crafted?
+
+New Game:
+* Change settings to 2 for base cost, 1.01 for multiplier, 1 for productivity multiplier
+* Create a bunch of iron plates or something
+* Does the appropriate message get displayed?
+* Does the productivity multiplier stop at 3?
+* Save the Game
+
+Load that save game:
+* Does it have all the displays still in the UI?
+
+Logs removed:
+* Have I removed all logs from the game? Validate with `tail -f %APPDATA%/Factorio/factorio-current.log`
+
+Before uploading:
+* Update version number
+* Zip files
+* Delete mod / zipped mod from mod folder
+* Move new zipped mod to mod folder
+* Run above tests
+* Update changelog
+* Push to git
+* Upload to Factorio

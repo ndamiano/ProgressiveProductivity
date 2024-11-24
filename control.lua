@@ -59,7 +59,7 @@ function calculateProductivityBonus(type, item, force, tick)
     productivityBonus = 0
     while productionAmount >= cost and productivityBonus < 3 do
         productivityBonus = productivityBonus + prodMult
-        cost = math.floor(cost * costMult)
+        cost = math.ceil(cost * costMult)
     end
     return productivityBonus
 end
@@ -94,28 +94,45 @@ function createCache()
     end
 end
 
--- TODO: Fix for when recipes have multiple products. This will cause issues.
-
 function updateProductivity(tick)
     -- For each force
     for forceName, force in pairs(game.forces) do
+        local recipeToProductivity = {}
         -- For each item
         for item, recipes in pairs(storage.progressiveProductivityItems) do
             -- Get the productivity bonus
             productivityBonus = calculateProductivityBonus("item", item, forceName, tick)
             for _, recipe in pairs(recipes) do
-                -- And set it for the recipes
-                force.recipes[recipe].productivity_bonus = productivityBonus
+                -- If the current productivity bonus is higher than the recipe, we check if it's the highest one so far for this recipe
+                -- If it is, we add it to the map. Otherwise, continue
+                if force.recipes[recipe].productivity_bonus < productivityBonus then
+                    local result = {}
+                    result["value"] = productivityBonus
+                    result["item"] = item
+                    if not recipeToProductivity[recipe] or recipeToProductivity[recipe]["value"] < productivityBonus then
+                        recipeToProductivity[recipe] = result
+                    end
+                end
             end
         end
-    end
-    -- Repeat!
-    for forceName, force in pairs(game.forces) do
         for fluid, recipes in pairs(storage.progressiveProductivityFluids) do
             productivityBonus = calculateProductivityBonus("fluid", fluid, forceName, tick)
             for _, recipe in pairs(recipes) do
-                force.recipes[recipe].productivity_bonus = productivityBonus
+                if force.recipes[recipe].productivity_bonus < productivityBonus then
+                    local result = {}
+                    result["value"] = productivityBonus
+                    result["item"] = fluid
+                    if not recipeToProductivity[recipe] or recipeToProductivity[recipe]["value"] < productivityBonus then
+                        recipeToProductivity[recipe] = result
+                    end
+                end
             end
+        end
+        -- We have all the ones we should actually use, now update the productivity
+        for recipe, result in pairs(recipeToProductivity) do
+            force.recipes[recipe].productivity_bonus = result["value"]
+            local item = {"?", {"item-name."..result["item"]}, {"entity-name."..result["item"]}, {"fluid-name."..result["item"]}}
+            game.print({"", {"mod-message.progressive-productivity-progressed", item, (result["value"] * 100)}})
         end
     end
 end
