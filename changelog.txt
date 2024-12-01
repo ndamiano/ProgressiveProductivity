@@ -1,27 +1,47 @@
-v0.1: Initial launch
-
-v0.2.0:
-* Added settings for base cost, cost multiplier, and productivity addition for items / fluids
-* Fixed fluids so they work, fluid cost is default 10x higher than non fluids
-* Hid technology from the players
-
-v0.2.1:
-* Fixed fluid productivity, as it wasn't using the settings
-
-v0.2.2:
-* Removed fill / empty barrel recipes from the productivity as they would give infinite insanely quickly
-
-v0.2.3:
-* Updated code to use appropriate cost variable for fluids
-* Added option to only enable for products that can use productivity
-* Cost Multiplier is now a double, enabling 1.5
-
-v0.2.4:
-* Set minimum for multiplier to 1.01
-
-v1.0.0:
-* Completely changed how the mod works. It no longer uses technologies, and instead uses production statistics
-* Added a screen to see the productivity bonus per item, viewable with CTRL + P or a shortcut button
-
-v1.0.2:
-* Fixed bug when recipe prototypes doesn't have allow_productivity
+---------------------------------------------------------------------------------------------------
+Version: 0.1
+  Major Features:
+    - Initial commit. When you make something a lot, you get better at making it!
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+  Minor Features:
+    - Added settings for base cost, cost multiplier, and productivity addition for items / fluids
+  Bugfixes:
+    - Fixed fluids so they work, fluid cost is default 10x higher than non fluids
+    - Hid technology from the players
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+  Bugfixes:
+    - Fixed fluid productivity, as it wasn't using the settings
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+  Bugfixes:
+    - Removed fill / empty barrel recipes from the productivity as they would give infinite fluids insanely quickly
+---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+  Features:
+    - Added option to only enable for products that can use productivity
+    - Cost Multiplier is now a double, enabling 1.5
+  Bugfixes:
+    - Updated code to use appropriate cost variable for fluids
+---------------------------------------------------------------------------------------------------
+Version: 0.2.4
+  Bugfixes:
+    - Set minimum for multiplier to 1.01
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+  Major Features:
+    - Completely changed how the mod works. It no longer uses technologies, and instead uses production statistics
+    - Added a screen to see the productivity bonus per item, viewable with CTRL + P or a shortcut button
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+  Bugfixes:
+    - Fixed bug when recipe prototypes doesn't have allow_productivity
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+  Features:
+    - Updated the settings to be runtime. Now you can change them midgame, which will recalculate your productivity bonuses
+  Bugfixes:
+    - Fixed a bug where the game would crash if you removed a mod that added recipes
+    - Fixed a bug where I wasn't using the fluid settings properly
+    - Attempted to fix a bug where we are 
