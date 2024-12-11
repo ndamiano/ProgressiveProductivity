@@ -1,7 +1,7 @@
 data:extend({
 	{
 		type = "int-setting",
-		name = "progressive-productivity-cost-base",
+		name = "progressive-productivity-item-cost-base",
 		setting_type = "runtime-global",
 		minimum_value = 1,
 		default_value = 10,
@@ -9,7 +9,7 @@ data:extend({
 	},
 	{
 		type = "double-setting",
-		name = "progressive-productivity-cost-multiplier",
+		name = "progressive-productivity-item-cost-multiplier",
 		setting_type = "runtime-global",
 		minimum_value = 1.01,
 		default_value = 2,
@@ -17,7 +17,7 @@ data:extend({
 	},
 	{
 		type = "double-setting",
-		name = "progressive-productivity-productivity-addition",
+		name = "progressive-productivity-item-productivity-addition",
 		setting_type = "runtime-global",
 		minimum_value = 0.001,
 		default_value = 0.05,
