@@ -72,10 +72,9 @@ end
 --#endregion
 
 -- Refresh production statistics cache every 5 seconds
-script.on_nth_tick(360, function(event)
+script.on_nth_tick(300, function(event)
     -- Refresh the production statistics cache
     refresh_production_statistics_cache()
-    -- log(serpent.dump(production_statistics_cache.production_statistics))
 end)
 
 -- Refresh production statistics cache when a force is created

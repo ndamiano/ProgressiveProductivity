@@ -114,10 +114,8 @@ end
 ---Refreshes the settings cache and notifies subscribers if mod settings have changed
 ---@param event EventData.on_runtime_mod_setting_changed The event data for the runtime mod setting changed event
 local function handle_runtime_mod_setting_change(event)
-    log("Changed?")
     -- For performance reasons and to avoid event spam, only handle changes once per tick
     if last_settings_changed_event_tick ~= event.tick then
-        log("changed???")
         last_settings_changed_event_tick = event.tick
 
         -- table.deepcopy is not available in the control phase

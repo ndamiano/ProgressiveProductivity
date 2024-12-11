@@ -1,4 +1,4 @@
-local product_cache = require("product_cache")
+local production_cache = require "utility.production_cache"
 local gui_module = {}
 
 -- TODO: Add a close button, then change the toggle approach (E and ESC are already taken care off by the game itself)
@@ -8,6 +8,10 @@ local gui_module = {}
 ---@param tick int
 local function createProgressiveProductivityUI(player, tick)
     -- Creates the gui every time it gets opened. Probably less efficient than saving it, but likely not an actual problem.
+    if production_cache.production_statistics[player.force.name] == nil then
+        -- TODO make a simple "initializing" UI
+        return
+    end
 
     -- Create UI frame
     local screen = player.gui.screen
@@ -42,7 +46,7 @@ local function createProgressiveProductivityUI(player, tick)
             sprite = item.type .. "/" .. item_name,
             tooltip = tooltip
         }
-        level = calculateProductivityLevel(item.type, item_name, player.force.name, tick)
+        level = calculateProductivityLevel(item.type, production_cache.production_statistics[player.force.name][item_name])
         prod_bonus = calculateProductivityAmount(item.type, level)
         itemFrame.add {
             type = "label",

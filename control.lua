@@ -10,16 +10,6 @@ script.on_init(function(event)
     product_cache.setupStorage()
 end)
 
--- When a force is created, re-create the cache
-script.on_event("on_force_created", function(event)
-    product_cache.createCache()
-end)
-
--- Every 5 seconds, check what the productivity level should be
-script.on_nth_tick(300, function(event)
-    product_cache.updateProductivity(event.tick)
-end)
-
 -- Events for toggling gui on and off
 script.on_event("toggle_progressive_productivity_gui", function(event)
     local player = game.get_player(event.player_index)
