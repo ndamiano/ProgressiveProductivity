@@ -75,7 +75,7 @@ end
 script.on_nth_tick(360, function(event)
     -- Refresh the production statistics cache
     refresh_production_statistics_cache()
-    log(serpent.dump(production_statistics_cache.production_statistics))
+    -- log(serpent.dump(production_statistics_cache.production_statistics))
 end)
 
 -- Refresh production statistics cache when a force is created

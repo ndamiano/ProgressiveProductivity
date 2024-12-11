@@ -94,21 +94,36 @@ function calculateProductivityAmount(type, level)
 end
 product_cache.calculateProductivityAmount = calculateProductivityAmount
 
+local function are_doubles_equal(a, b, epsilon)
+    epsilon = epsilon or 1e-4  -- Default epsilon value
+    return math.abs(a - b) < epsilon
+end
+
 ---@param tick int
 function updateProductivity(tick)
     -- For each force
     for force_name, force in pairs(game.forces) do
+        processed_recipes = {}
         -- For each item
         for item_name, item in pairs(storage.items) do
             level = calculateProductivityLevel(item.type, item_name, force_name, tick)
             prod_bonus = calculateProductivityAmount(item.type, level)
             -- For each recipe set prod bonus to expected amount
-            for _, recipe in pairs(item.recipes) do
-                if prod_bonus > force.recipes[recipe].productivity_bonus then
-                    local display_item_name = {"?", {"item-name."..item_name}, {"fluid-name."..item_name}, {"entity-name."..item_name}}
-                    game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
-                    force.recipes[recipe].productivity_bonus = prod_bonus
+            for _, recipe_name in pairs(item.recipes) do
+                recipe = force.recipes[recipe_name]
+                if processed_recipes[recipe_name] == nil then
+                    processed_recipes[recipe_name] = prod_bonus
                 end
+                if processed_recipes[recipe_name] < prod_bonus then
+                    processed_recipes[recipe_name] = prod_bonus
+                end
+            end
+        end
+        for recipe_name, prod_bonus in pairs(processed_recipes) do
+            if not are_doubles_equal(force.recipes[recipe_name].productivity_bonus, prod_bonus) then
+                local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
+                game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
+                force.recipes[recipe_name].productivity_bonus = prod_bonus
             end
         end
     end
