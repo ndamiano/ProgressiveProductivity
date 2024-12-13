@@ -86,6 +86,8 @@ production_cache.on_production_statistics_may_have_changed(function()
             if not are_doubles_equal(force.recipes[recipe_name].productivity_bonus, prod_bonus) then
                 local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
                 game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
+                -- This is because Factorio internally floors productivity_bonus to 2 decimal places. This causes 1.05 to (which is a float equal to 1.0499999523162841796875) to round to 1.04, causing many notifications
+                prod_bonus = prod_bonus + 0.00001
                 force.recipes[recipe_name].productivity_bonus = prod_bonus
             end
         end

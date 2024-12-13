@@ -44,4 +44,14 @@ Version: 1.0.4
   Bugfixes:
     - Fixed a bug where the game would crash if you removed a mod that added recipes
     - Fixed a bug where I wasn't using the fluid settings properly
-    - Attempted to fix a bug where we are 
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+  Features:
+    - Reworked the internals of the mod (again) to hopefully add some more consistency.
+    - Productive Productivity now simply sets the recipe's productivity. This means it is not compatible with other mods that also set recipe productivity during runtime.
+  Bugfixes:
+    - Should no longer crash on opening the GUI
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+  Bugfixes:
+    - Factorio by default floors productivity_bonus value to two decimal places. Because it's a float, which can have a negative error, this causes certain numbers to be done incorrectly. This was causing many notifications when I used 1.05 (which in lua is actually 1.0499999523162841796875) as it rounded down to 1.04, and the mod kept trying to set it.
