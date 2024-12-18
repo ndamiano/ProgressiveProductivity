@@ -6,13 +6,13 @@ local product_cache = require("utility.product_cache")
 local gui_module = require("utility.gui_module")
 
 -- When recipes could have changed or when we are initialized, create our local storage
-script.on_configuration_changed(function(event)
-    product_cache.setupStorage()
-end)
+script.on_configuration_changed(
+    product_cache.setupStorage
+)
 
-script.on_init(function(event)
-    product_cache.setupStorage()
-end)
+script.on_init(
+    product_cache.setupStorage
+)
 
 --#region Events for toggling gui on and off
 
