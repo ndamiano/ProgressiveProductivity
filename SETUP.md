@@ -14,6 +14,8 @@ You can install Visual Studio Code from [here](https://code.visualstudio.com/) o
 The following extensions are recommended for this project:
 
 - [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) (`editorconfig.editorconfig`)
+- [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) (`sumneko.lua`)
 
 Suggestions for these extensions are included in the `.vscode/extensions.json` file for your convenience,
 to prompt you to install them when you open the project in Visual Studio Code.
+Configurations for these extensions are already included in the `.vscode` directory as well.
