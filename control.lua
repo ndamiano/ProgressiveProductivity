@@ -1,5 +1,7 @@
 ---@diagnostic enable:spell-check
 
+if script.active_mods["gvv"] then require("__gvv__.gvv")() end
+
 local product_cache = require("utility.product_cache")
 local gui_module = require("utility.gui_module")
 
