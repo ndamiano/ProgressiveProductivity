@@ -14,7 +14,9 @@ script.on_init(function(event)
     product_cache.setupStorage()
 end)
 
--- Events for toggling gui on and off
+--#region Events for toggling gui on and off
+
+-- Hotkey Press Event
 script.on_event("toggle_progressive_productivity_gui", function(event)
     --#region Tell the language server that event_data is of type EventData.CustomInputEvent
     ---The callback's parameter gets assigned the basic EventData type.
@@ -26,6 +28,7 @@ script.on_event("toggle_progressive_productivity_gui", function(event)
     gui_module.toggleProgressiveProductivityUI(player, event.tick)
 end)
 
+-- Toolbar Click Event
 script.on_event(defines.events.on_lua_shortcut, function(event)
     --#region Tell the language server that event_data is of type EventData.on_lua_shortcut
     ---The callback's parameter gets assigned the basic EventData type.
@@ -39,6 +42,7 @@ script.on_event(defines.events.on_lua_shortcut, function(event)
     end
 end)
 
+-- Handle GUI closed event
 script.on_event(defines.events.on_gui_closed, function(event)
     --#region Tell the language server that event_data is of type EventData.on_gui_closed
     ---The callback's parameter gets assigned the basic EventData type.
@@ -51,3 +55,5 @@ script.on_event(defines.events.on_gui_closed, function(event)
         gui_module.toggleProgressiveProductivityUI(player, event.tick)
     end
 end)
+
+--#endregion
