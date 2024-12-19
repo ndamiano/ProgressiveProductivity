@@ -1,3 +1,5 @@
+local events = require("utility.events")
+
 -- This module handles the caching and updating of mod settings for progressive productivity.
 -- It provides functionality to refresh settings, notify subscribers of changes,
 -- and handle runtime mod setting changes.
@@ -129,6 +131,6 @@ local function handle_runtime_mod_setting_change(event)
 end
 
 -- Register the above event handler
-script.on_event(defines.events.on_runtime_mod_setting_changed, handle_runtime_mod_setting_change)
+events.on_event(defines.events.on_runtime_mod_setting_changed, handle_runtime_mod_setting_change)
 
 return settings_cache

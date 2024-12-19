@@ -1,0 +1,15 @@
+{
+    "Lua.diagnostics.libraryFiles": "Enable",
+    "Lua.runtime.version": "Lua 5.2",
+    "Lua.workspace.checkThirdParty": "ApplyInMemory",
+    "Lua.workspace.library": [
+        "${workspaceFolder}"
+    ],
+    "todo-tree.regex.regex": "--\\[\\[[\\s|\\n|\\r]*($TAGS)[\\s|\\n|\\r]*\\]\\]|--\\s*($TAGS)",
+    "todo-tree.regex.subTagRegex": "@([a-zA-Z0-9_-]+)",
+    "todo-tree.tree.disableCompactFolders": false,
+    "todo-tree.tree.groupedBySubTag": false,
+    "todo-tree.tree.groupedByTag": false,
+    "todo-tree.tree.hideIconsWhenGroupedByTag": false,
+    "todo-tree.tree.scanMode": "workspace only"
+}
