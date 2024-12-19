@@ -1,3 +1,5 @@
+local events = require("utility.events")
+
 -- This module handles the caching of production statistics for progressive productivity.
 -- It provides functionality to refresh production statistics cache in certain situations
 -- and at certain intervals automatically. Subscribers get notified after each refresh.
@@ -72,12 +74,12 @@ end
 --#endregion
 
 -- Refresh production statistics cache every 5 seconds
-script.on_nth_tick(300, function(event)
+events.on_nth_tick(300, function()
     -- Refresh the production statistics cache
     refresh_production_statistics_cache()
 end)
 
 -- Refresh production statistics cache when a force is created
-script.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
+events.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
 
 return production_statistics_cache

@@ -2,22 +2,23 @@
 
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 
+local events = require("utility.events")
 local product_cache = require("utility.product_cache")
 local gui_module = require("utility.gui_module")
 
 -- When recipes could have changed or when we are initialized, create our local storage
-script.on_configuration_changed(
+events.on_configuration_changed(
     product_cache.setupStorage
 )
 
-script.on_init(
+events.on_init(
     product_cache.setupStorage
 )
 
 --#region Events for toggling gui on and off
 
 -- Hotkey Press Event
-script.on_event("toggle_progressive_productivity_gui", function(event)
+events.on_event("toggle_progressive_productivity_gui", function(event)
     --#region Tell the language server that event_data is of type EventData.CustomInputEvent
     ---The callback's parameter gets assigned the basic EventData type.
     ---This is a limitation of @overloads, that has been documented in detail in events.lua
@@ -29,7 +30,7 @@ script.on_event("toggle_progressive_productivity_gui", function(event)
 end)
 
 -- Toolbar Click Event
-script.on_event(defines.events.on_lua_shortcut, function(event)
+events.on_event(defines.events.on_lua_shortcut, function(event)
     --#region Tell the language server that event_data is of type EventData.on_lua_shortcut
     ---The callback's parameter gets assigned the basic EventData type.
     ---This is a limitation of @overloads, that has been documented in detail in events.lua
@@ -43,7 +44,7 @@ script.on_event(defines.events.on_lua_shortcut, function(event)
 end)
 
 -- Handle GUI closed event
-script.on_event(defines.events.on_gui_closed, function(event)
+events.on_event(defines.events.on_gui_closed, function(event)
     --#region Tell the language server that event_data is of type EventData.on_gui_closed
     ---The callback's parameter gets assigned the basic EventData type.
     ---This is a limitation of @overloads, that has been documented in detail in events.lua
