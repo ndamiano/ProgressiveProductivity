@@ -1,0 +1,19 @@
+# http://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# A list of all possible settings and their default values can be found here:
+#   - https://github.com/CppCXY/EmmyLuaCodeStyle/blob/master/lua.template.editorconfig
+# A documentation going into more details about these settings can be found here:
+#   - https://github.com/CppCXY/EmmyLuaCodeStyle/blob/master/docs/format_config_EN.md
+
+[*.lua]
+indent_size = 4
+align_continuous_assign_statement = always
+align_continuous_line_space = 1
