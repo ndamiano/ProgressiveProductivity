@@ -15,8 +15,5 @@ insert_final_newline = true
 
 [*.lua]
 indent_size = 4
-# Continous assign statement do not work anymore.
-# For more details see: https://github.com/LuaLS/lua-language-server/issues/2995
-# Given the feedback there, these should be the correct settings:
-align_continuous_assign_statement = true
+align_continuous_assign_statement = always
 align_continuous_line_space = 1
