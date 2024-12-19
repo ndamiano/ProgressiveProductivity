@@ -50,10 +50,12 @@ local function refresh_production_statistics_cache()
             local force_surface_fluid_statistics = force.get_fluid_production_statistics(surface)
             for item_name, item in pairs(storage.items) do
                 if item.type == "item" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
+                    item_statistics[item_name] = (item_statistics[item_name] or 0)
+                        + force_surface_item_statistics.get_input_count(item_name)
                 end
                 if item.type == "fluid" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_fluid_statistics.get_input_count(item_name)
+                    item_statistics[item_name] = (item_statistics[item_name] or 0)
+                        + force_surface_fluid_statistics.get_input_count(item_name)
                 end
             end
         end
