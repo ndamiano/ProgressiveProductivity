@@ -5,7 +5,7 @@
     "Lua.workspace.library": [
         "${workspaceFolder}"
     ],
-    "todo-tree.regex.regex": "--\\[\\[[\\s|\\n|\\r]*($TAGS)[\\s|\\n|\\r]*\\]\\]|--\\s*($TAGS)",
+    "todo-tree.regex.regex": "^[ \\t]*(?:[-*+>] )?($TAGS) |--(?:\\[\\[)? ($TAGS) ",
     "todo-tree.regex.subTagRegex": "@([a-zA-Z0-9_-]+)",
     "todo-tree.tree.disableCompactFolders": false,
     "todo-tree.tree.groupedBySubTag": false,
