@@ -1,3 +1,5 @@
+local events = require("utility.events")
+
 -- This module handles the caching of production statistics for progressive productivity.
 -- It provides functionality to refresh production statistics cache in certain situations
 -- and at certain intervals automatically. Subscribers get notified after each refresh.
@@ -48,10 +50,12 @@ local function refresh_production_statistics_cache()
             local force_surface_fluid_statistics = force.get_fluid_production_statistics(surface)
             for item_name, item in pairs(storage.items) do
                 if item.type == "item" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
+                    item_statistics[item_name] = (item_statistics[item_name] or 0)
+                        + force_surface_item_statistics.get_input_count(item_name)
                 end
                 if item.type == "fluid" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_fluid_statistics.get_input_count(item_name)
+                    item_statistics[item_name] = (item_statistics[item_name] or 0)
+                        + force_surface_fluid_statistics.get_input_count(item_name)
                 end
             end
         end
@@ -72,12 +76,12 @@ end
 --#endregion
 
 -- Refresh production statistics cache every 5 seconds
-script.on_nth_tick(300, function(event)
+events.on_nth_tick(300, function()
     -- Refresh the production statistics cache
     refresh_production_statistics_cache()
 end)
 
 -- Refresh production statistics cache when a force is created
-script.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
+events.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
 
 return production_statistics_cache
