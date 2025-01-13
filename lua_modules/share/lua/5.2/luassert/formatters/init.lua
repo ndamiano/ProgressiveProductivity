@@ -3,11 +3,12 @@ local assert = require('luassert.assert')
 local match = require('luassert.match')
 local util = require('luassert.util')
 
+-- Updated this block with minimal changes to make it work in Factorio
 local isatty, colors do
   local ok, term = pcall(require, 'term')
-  isatty = io.type(io.stdout) == 'file' and ok and term.isatty(io.stdout)
+  isatty = false -- was: io.type(io.stdout) == 'file' and ok and term.isatty(io.stdout)
   if not isatty then
-    local isWindows = package.config:sub(1,1) == '\\'
+    local isWindows = false -- was: package.config:sub(1,1) == '\\'
     if isWindows and os.getenv("ANSICON") then
       isatty = true
     end
