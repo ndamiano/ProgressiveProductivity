@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "rockspecFile",
+            "type": "promptString",
+            "description": "Enter the rockspec file name.",
+            "default": "progressive-productivity-1.0.6-0.rockspec"
+        }
+    ],
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "luarocks: lint rockspec",
+            "command": "luarocks",
+            "args": [
+                "lint",
+                "${input:rockspecFile}"
+            ],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "luarocks: install/update lua modules (only)",
+            "command": "luarocks",
+            "args": [
+                "install",
+                "--deps-only",
+                "${input:rockspecFile}"
+            ],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "run: install/update lua modules and create/update compatibility layer",
+            "command": "lua",
+            "args": [
+                ".update_lua_modules.lua"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
