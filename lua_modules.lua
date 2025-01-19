@@ -42,12 +42,14 @@ local redirect_prefix_parts = {
     "lua_modules",
     "share",
     "lua",
-    "5.2" .. path_separator
+    "5.2"
 }
 local redirect_prefix = table.concat(redirect_prefix_parts, path_separator)
 
 if _VERSION == "Lua 5.2" and serpent and log and table_size and settings and defines then
     -- Factorio, supports '.' in package names (does not replace)
+
+    redirect_prefix = redirect_prefix .. path_separator
 
     local redirection = {
         ["luassert"] = redirect_prefix .. "luassert/init.lua",
