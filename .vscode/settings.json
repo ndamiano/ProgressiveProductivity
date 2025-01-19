@@ -2,10 +2,18 @@
     "Lua.diagnostics.libraryFiles": "Enable",
     "Lua.runtime.version": "Lua 5.2",
     "Lua.workspace.checkThirdParty": "ApplyInMemory",
+    "Lua.workspace.ignoreDir": [
+        // "lua_modules" added to "Lua.workspace.ignoreDir" instead of "Lua.workspace.library",
+        // because right now the only used dependencies are covered by the sumneko-3rd library
+        // annotations already, which are way better than what the language server would generate.
+        // If a module would be added that would not be covered by the sumneko-3rd library, then
+        // a more granular configuration would be required.
+        "lua_modules"
+    ],
     "Lua.workspace.library": [
         "${workspaceFolder}"
     ],
-    "todo-tree.regex.regex": "--\\[\\[[\\s|\\n|\\r]*($TAGS)[\\s|\\n|\\r]*\\]\\]|--\\s*($TAGS)",
+    "todo-tree.regex.regex": "^[ \\t]*(?:[-*+>] )?($TAGS) |--(?:\\[\\[)? ($TAGS) ",
     "todo-tree.regex.subTagRegex": "@([a-zA-Z0-9_-]+)",
     "todo-tree.tree.disableCompactFolders": false,
     "todo-tree.tree.groupedBySubTag": false,

@@ -1,0 +1,188 @@
+commands = {}
+dependencies = {
+   luassert = {
+      ["1.9.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     1, 4, 0, revision = 1, string = "1.4.0-1"
+                  }
+               }
+            },
+            name = "say"
+         }
+      }
+   },
+   say = {
+      ["1.4.1-3"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   }
+}
+modules = {
+   ["luassert.array"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.assert"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.assertions"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.compatibility"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.formatters.binarystring"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.formatters.init"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.init"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.ar"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.de"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.en"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.fr"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.is"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.ja"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.nl"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.ru"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.ua"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.languages.zh"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.match"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.matchers.composite"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.matchers.core"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.matchers.init"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.mock"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.modifiers"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.namespaces"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.spy"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.state"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.stub"] = {
+      "luassert/1.9.0-1"
+   },
+   ["luassert.util"] = {
+      "luassert/1.9.0-1"
+   },
+   ["say.init"] = {
+      "say/1.4.1-3"
+   }
+}
+repository = {
+   luassert = {
+      ["1.9.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               say = "1.4.1-3"
+            },
+            modules = {
+               ["luassert.array"] = "luassert/array.lua",
+               ["luassert.assert"] = "luassert/assert.lua",
+               ["luassert.assertions"] = "luassert/assertions.lua",
+               ["luassert.compatibility"] = "luassert/compatibility.lua",
+               ["luassert.formatters.binarystring"] = "luassert/formatters/binarystring.lua",
+               ["luassert.formatters.init"] = "luassert/formatters/init.lua",
+               ["luassert.init"] = "luassert/init.lua",
+               ["luassert.languages.ar"] = "luassert/languages/ar.lua",
+               ["luassert.languages.de"] = "luassert/languages/de.lua",
+               ["luassert.languages.en"] = "luassert/languages/en.lua",
+               ["luassert.languages.fr"] = "luassert/languages/fr.lua",
+               ["luassert.languages.is"] = "luassert/languages/is.lua",
+               ["luassert.languages.ja"] = "luassert/languages/ja.lua",
+               ["luassert.languages.nl"] = "luassert/languages/nl.lua",
+               ["luassert.languages.ru"] = "luassert/languages/ru.lua",
+               ["luassert.languages.ua"] = "luassert/languages/ua.lua",
+               ["luassert.languages.zh"] = "luassert/languages/zh.lua",
+               ["luassert.match"] = "luassert/match.lua",
+               ["luassert.matchers.composite"] = "luassert/matchers/composite.lua",
+               ["luassert.matchers.core"] = "luassert/matchers/core.lua",
+               ["luassert.matchers.init"] = "luassert/matchers/init.lua",
+               ["luassert.mock"] = "luassert/mock.lua",
+               ["luassert.modifiers"] = "luassert/modifiers.lua",
+               ["luassert.namespaces"] = "luassert/namespaces.lua",
+               ["luassert.spy"] = "luassert/spy.lua",
+               ["luassert.state"] = "luassert/state.lua",
+               ["luassert.stub"] = "luassert/stub.lua",
+               ["luassert.util"] = "luassert/util.lua"
+            }
+         }
+      }
+   },
+   say = {
+      ["1.4.1-3"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["say.init"] = "say/init.lua"
+            }
+         }
+      }
+   }
+}
