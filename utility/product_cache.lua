@@ -1,10 +1,10 @@
 local product_cache = {}
 local settings_cache = require("utility.settings_cache")
 local production_cache = require("utility.production_cache")
--- This function creates a map of item to recipe
+-- This function populates the storage items table with a map of items to recipies.
 function setupStorage()
-	if storage.items == nil then storage.items = {} end
-	if storage.productivityPercents == nil then storage.productivityPercents = {} end
+	if global.storage.items == nil then global.storage.items = {} end
+	if global.storage.productivityPercents == nil then global.storage.productivityPercents = {} end
 	-- Get our list of item -> recipe
 	playerForce = game.forces['player']
 	recipes = playerForce.recipes
@@ -19,13 +19,13 @@ function setupStorage()
 			goto continue
 		end
 		for _, product in pairs(recipe.products) do
-			if storage.items[product.name] == nil then
-				storage.items[product.name] = {
+			if global.storage.items[product.name] == nil then
+				global.storage.items[product.name] = {
 					recipes = {},
 					type = product.type
 				}
 			end
-			table.insert(storage.items[product.name]["recipes"], recipe.name)
+			table.insert(global.storage.items[product.name]["recipes"], recipe.name)
 		end
 		::continue::
 	end
@@ -59,13 +59,18 @@ product_cache.calculateProductivityAmount = calculateProductivityAmount
 end
 
 production_cache.on_production_statistics_may_have_changed(function()
-	if global.storage.migration_needed then
-        	global.storage.migration_needed = nil
-        	game.print("Progressive Productivity: Running scheduled migration...")
-
+	if global.storage.first_start then
+        	global.storage.first_start = nil
         	local playerForce = game.forces['player']
+		
+		-- check if modded first, if its modded global.storage.items should be there. Affects migration.
+ 		local is_unmodded_save = (global.storage.items == nil or next(global.storage.items) == nil)
+		if is_unmodded_save then game.print("Progressive Productivity: Starting initial calculations...")
+		else game.print("Progressive Productivity: Starting migration") end
         	setupStorage()
-        	-- STEP 1: Calculate what the bonus *should* be for each recipe right now.
+		global.storage.productivityPercents = {} -- must be clear
+
+        	-- STEP 1: Calculate what the current production values for each recipe.
         	local should_be_mod_bonuses = {}
         	local current_production_values = {}
         	for _, surface in pairs(game.surfaces) do
@@ -77,6 +82,7 @@ production_cache.on_production_statistics_may_have_changed(function()
                                                     + fluid_stats.get_input_count(item_name)
             		end
        		end
+		-- STEP 2: Calculate what the mod bonus *should* be for each recipe attached to that item (eg multiple fuel recipes).
         	for item_name, production_count in pairs(current_production_values) do
             		if production_count > 0 then
                 		local item_data = global.storage.items[item_name]
@@ -89,19 +95,22 @@ production_cache.on_production_statistics_may_have_changed(function()
                 		end
             		end
         	end
-		storage.productivityPercents = {} -- Clear the history for a fresh start.
+		-- STEP 3: Apply bonuses depending on migration conditions.
         	for recipe_name, recipe in pairs(playerForce.recipes) do
             		if recipe.valid and recipe.enabled then
                 		local new_bonus = should_be_mod_bonuses[recipe_name] or 0
-                		recipe.productivity_bonus = new_bonus
-
+				if is_unmodded_save then
+					-- add the bonus to unmodded
+                    			recipe.productivity_bonus = (recipe.productivity_bonus or 0) + new_bonus
+                		else
+					-- take the max when migrating (preserves other productivity sources)
+					recipe.productivity_bonus = math.max(new_bonus, recipe.productivity_bonus or 0)
+ 				end
                              	if new_bonus > 0 then
-                    			storage.productivityPercents[recipe_name] = new_bonus
+                    			global.storage.productivityPercents[recipe_name] = new_bonus
                 		end
             		end
         	end
-
-        	game.print("Progressive Productivity: Migration complete. All recipe bonuses have been reset.")
         	return
     	end
 
@@ -113,7 +122,7 @@ production_cache.on_production_statistics_may_have_changed(function()
 
         for item_name, production_count in pairs(production_values) do
             if production_count > 0 then
-                local item_data = storage.items[item_name]
+                local item_data = global.storage.items[item_name]
                 if not item_data then
                     -- This item might be produced but not tracked by your setupStorage (e.g., filtered out)
                     goto continue_item_loop
@@ -137,7 +146,7 @@ production_cache.on_production_statistics_may_have_changed(function()
             end
 
             local current_total_recipe_bonus = recipe.productivity_bonus or 0
-            local mod_previous_bonus_applied = storage.productivityPercents[recipe_name] or 0
+            local mod_previous_bonus_applied = global.storage.productivityPercents[recipe_name] or 0
             local base_productivity_from_research = current_total_recipe_bonus - mod_previous_bonus_applied
             local calculated_total_bonus = base_productivity_from_research + new_mod_prod_bonus_target
 
@@ -148,7 +157,7 @@ production_cache.on_production_statistics_may_have_changed(function()
                 local display_value = string.format("%.2f", calculated_total_bonus * 100)
  		game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, display_value}})
                 recipe.productivity_bonus = calculated_total_bonus
-                storage.productivityPercents[recipe_name] = new_mod_prod_bonus_target
+                global.storage.productivityPercents[recipe_name] = new_mod_prod_bonus_target
             end
             ::continue_recipe_loop::
         end
