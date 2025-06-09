@@ -64,34 +64,55 @@ end
 
 production_cache.on_production_statistics_may_have_changed(function()
     for force_name, production_values in pairs(production_cache.production_statistics) do
-        force = game.forces[force_name]
-        processed_recipes = {}
+        local force = game.forces[force_name]
+        if not force then goto continue_force_loop end -- Safety check for cases like force being destroyed
+
+        local processed_recipes = {} -- Stores the highest calculated `prod_bonus` for each recipe
+
         for item_name, production_count in pairs(production_values) do
             if production_count > 0 then
-                item = storage.items[item_name]
-                level = calculateProductivityLevel(item.type, production_count)
-                prod_bonus = calculateProductivityAmount(item.type, level)
-                for _, recipe_name in pairs(item.recipes) do
-                    recipe = force.recipes[recipe_name]
-                    if processed_recipes[recipe_name] == nil then
-                        processed_recipes[recipe_name] = prod_bonus
-                    end
-                    if processed_recipes[recipe_name] < prod_bonus then
-                        processed_recipes[recipe_name] = prod_bonus
-                    end
+                local item_data = storage.items[item_name]
+                if not item_data then
+                    -- This item might be produced but not tracked by your setupStorage (e.g., filtered out)
+                    goto continue_item_loop
+                end
+
+                local level = calculateProductivityLevel(item_data.type, production_count)
+                local mod_calculated_prod_bonus = calculateProductivityAmount(item_data.type, level)
+
+                for _, recipe_name in pairs(item_data.recipes) do
+                    -- Ensure `processed_recipes` stores the *maximum* bonus from any of its products
+                    processed_recipes[recipe_name] = math.max(processed_recipes[recipe_name] or 0, mod_calculated_prod_bonus)
                 end
             end
+            ::continue_item_loop::
         end
-        for recipe_name, prod_bonus in pairs(processed_recipes) do
-            if not are_doubles_equal(force.recipes[recipe_name].productivity_bonus, prod_bonus) then
-                local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
-                game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
-                -- This is because Factorio internally floors productivity_bonus to 2 decimal places. This causes 1.05 to (which is a float equal to 1.0499999523162841796875) to round to 1.04, causing many notifications
-                prod_bonus = prod_bonus + 0.00001
-                force.recipes[recipe_name].productivity_bonus = prod_bonus
+
+        for recipe_name, new_mod_prod_bonus_target in pairs(processed_recipes) do
+            local recipe = force.recipes[recipe_name]
+            if not recipe or not recipe.valid or not recipe.enabled then
+                goto continue_recipe_loop -- Skip invalid/disabled recipes
             end
+
+            local current_total_recipe_bonus = recipe.productivity_bonus or 0
+            local mod_previous_bonus_applied = storage.productivityPercents[recipe_name] or 0
+            local base_productivity_from_research = current_total_recipe_bonus - mod_previous_bonus_applied
+            local calculated_total_bonus = base_productivity_from_research + new_mod_prod_bonus_target
+
+            -- Compare with a small epsilon to avoid unnecessary updates and notifications
+            -- due to floating-point precision issues in Factorio's internal API.
+            if not are_doubles_equal(current_total_recipe_bonus, calculated_total_bonus) then
+                local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
+                local display_value = string.format("%.2f", calculated_total_bonus * 100)
+ 		game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, display_value}})
+                recipe.productivity_bonus = calculated_total_bonus
+                storage.productivityPercents[recipe_name] = new_mod_prod_bonus_target
+            end
+            ::continue_recipe_loop::
         end
+        ::continue_force_loop::
     end
 end)
+
 
 return product_cache
