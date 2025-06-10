@@ -36,6 +36,7 @@ product_cache.setupStorage = setupStorage
 ---@param type string
 ---@param production_amount number
 function calculateProductivityLevel(type, production_amount)
+	-- Get the number of an item / fluid produced-- Get the amount of an item or fluid produced
 	local product_settings = settings_cache.settings[type] --[[@as ProductSettings]]
 	local cost = product_settings.cost_base
 	local level = 0
@@ -62,65 +63,63 @@ end
 
 -- This function is a utility needed for first run after load.
 function get_research_bonuses_by_recipe(force)
-    local recipe_bonuses = {}
-    for tech_name, technology in pairs(force.technologies) do
-        if technology.level > 1 and string.match(technology.name, "-productivity") then
-            for _, effect in pairs(technology.prototype.effects) do
-                if effect.type == "change-recipe-productivity" then
-                    local recipe_name = effect.recipe
-                    local change_per_level = effect.change or 0
-                    local total_bonus = change_per_level * (technology.level - 1)
-                    recipe_bonuses[recipe_name] = (recipe_bonuses[recipe_name] or 0) + total_bonus
-                end
-            end
-	    -- DEBUG game.print(string.format("%s, %.2f", technology.name, technology.level * 10))
-        end
-    end
-    return recipe_bonuses
+	local recipe_bonuses = {}
+	for tech_name, technology in pairs(force.technologies) do
+		if technology.level > 1 and string.match(technology.name, "-productivity") then
+			for _, effect in pairs(technology.prototype.effects) do
+				if effect.type == "change-recipe-productivity" then
+					local recipe_name = effect.recipe
+					local change_per_level = effect.change or 0
+					local total_bonus = change_per_level * (technology.level - 1)
+					recipe_bonuses[recipe_name] = (recipe_bonuses[recipe_name] or 0) + total_bonus
+				end	
+			end
+			-- DEBUG game.print(string.format("%s, %.2f", technology.name, technology.level * 10))
+		end
+	end
+	return recipe_bonuses
 end
 
 production_cache.on_production_statistics_may_have_changed(function()
-    for force_name, production_values in pairs(production_cache.production_statistics) do
-        local force = game.forces[force_name]
-        if not force then goto continue_force_loop end
+	for force_name, production_values in pairs(production_cache.production_statistics) do
+		local force = game.forces[force_name]
+		if not force then goto continue_force_loop end
 
-        setupStorage()
+		setupStorage()
 
-        -- STEP 1: Get the base productivity from vanilla/other mod research.
-        local research_bonuses = get_research_bonuses_by_recipe(force)
+		-- STEP 1: Get the base productivity from vanilla/other mod research.
+		local research_bonuses = get_research_bonuses_by_recipe(force)
 
-        -- STEP 2: Calculate what this mod's bonus *should* be for each recipe.
-        local should_be_mod_bonuses = {}
-        for item_name, production_count in pairs(production_values) do
-            if production_count > 0 then
-                local item_data = storage.items[item_name]
-                if item_data then
-                    local level = calculateProductivityLevel(item_data.type, production_count)
-                    local mod_bonus = calculateProductivityAmount(item_data.type, level)
-                    for _, recipe_name in pairs(item_data.recipes) do
-                        should_be_mod_bonuses[recipe_name] = math.max(should_be_mod_bonuses[recipe_name] or 0, mod_bonus)
-                    end
-                end
-            end
-        end
-
-	    -- STEP 3: Apply the calculations
-        for recipe_name, recipe in pairs(force.recipes) do
-            if recipe.valid and recipe.enabled then
+		-- STEP 2: Calculate what this mod's bonus *should* be for each recipe.
+		local should_be_mod_bonuses = {}
+		for item_name, production_count in pairs(production_values) do
+			if production_count > 0 then
+				local item_data = storage.items[item_name]
+				if item_data then
+					local level = calculateProductivityLevel(item_data.type, production_count)
+					local mod_bonus = calculateProductivityAmount(item_data.type, level)
+					for _, recipe_name in pairs(item_data.recipes) do
+						should_be_mod_bonuses[recipe_name] = math.max(should_be_mod_bonuses[recipe_name] or 0, mod_bonus)
+					end
+				end
+			end
+		end
+		-- STEP 3: Apply the calculations
+		for recipe_name, recipe in pairs(force.recipes) do
+			if recipe.valid and recipe.enabled then
 				local research_bonus = research_bonuses[recipe_name] or 0
-                local mod_bonus = should_be_mod_bonuses[recipe_name] or 0
+				local mod_bonus = should_be_mod_bonuses[recipe_name] or 0
 				local prod_bonus = research_bonus + mod_bonus
-		    	if not are_doubles_equal(recipe.productivity_bonus, prod_bonus) then
+				if not are_doubles_equal(recipe.productivity_bonus, prod_bonus) then
 					local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
 					-- This is because Factorio internally floors productivity_bonus to 2 decimal places. This causes 1.05 to (which is a float equal to 1.0499999523162841796875) to round to 1.04, causing many notifications
-               		game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
+					game.print({"", {"mod-message.progressive-productivity-progressed", display_item_name, (prod_bonus * 100)}})
 					prod_bonus = prod_bonus + 0.00001
 					recipe.productivity_bonus = prod_bonus
-		    	end
-            end
-        end
-	    ::continue_force_loop::
-    end
+				end
+			end
+		end
+		::continue_force_loop::
+	end
 end)
-
 return product_cache
