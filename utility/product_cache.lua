@@ -61,7 +61,7 @@ local function are_doubles_equal(a, b, epsilon)
 	return math.abs(a - b) < epsilon
 end
 
--- This function is a utility needed for first run after load.
+-- This function calculates the research bonuses.
 function get_research_bonuses_by_recipe(force)
 	local recipe_bonuses = {}
 	for tech_name, technology in pairs(force.technologies) do
@@ -89,7 +89,8 @@ production_cache.on_production_statistics_may_have_changed(function()
 
 		-- STEP 1: Get the base productivity from vanilla/other mod research.
 		local research_bonuses = get_research_bonuses_by_recipe(force)
-
+		-- TODO: Extract this from on_production_statistics and put it in its own cache (storage.research) and update it on_research_completed to save some UPS
+			
 		-- STEP 2: Calculate what this mod's bonus *should* be for each recipe.
 		local should_be_mod_bonuses = {}
 		for item_name, production_count in pairs(production_values) do
