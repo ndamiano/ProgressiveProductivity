@@ -70,11 +70,12 @@ function get_research_bonuses_by_recipe(force)
 				if effect.type == "change-recipe-productivity" then
 					local recipe_name = effect.recipe
 					local change_per_level = effect.change or 0
+					-- current tech.level is always one ahead of researched level
 					local total_bonus = change_per_level * (technology.level - 1)
 					recipe_bonuses[recipe_name] = (recipe_bonuses[recipe_name] or 0) + total_bonus
 				end	
 			end
-			-- DEBUG game.print(string.format("%s, %.2f", technology.name, technology.level * 10))
+			-- DEBUG game.print(string.format("%s, %.2f", technology.name, (technology.level -1) * 10))
 		end
 	end
 	return recipe_bonuses
