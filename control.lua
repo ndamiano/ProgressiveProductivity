@@ -6,7 +6,6 @@ local gui_module = require("utility.gui_module")
 
 script.on_init(function()
     	storage.items = {}
-    	storage.productivityPercents = {}
     	product_cache.setupStorage()
 end)
 
