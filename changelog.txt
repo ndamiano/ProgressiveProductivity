@@ -55,3 +55,7 @@ Version: 1.0.5
 Version: 1.0.6
   Bugfixes:
     - Factorio by default floors productivity_bonus value to two decimal places. Because it's a float, which can have a negative error, this causes certain numbers to be done incorrectly. This was causing many notifications when I used 1.05 (which in lua is actually 1.0499999523162841796875) as it rounded down to 1.04, and the mod kept trying to set it.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+  Bugfixes:
+    - Huge thanks to @josephquesnel for fixing the issue where this mod would overwrite productivity research. It now plays nicely and adds its bonus to the research bonus.
