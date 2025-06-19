@@ -59,3 +59,7 @@ Version: 1.0.6
 Version: 1.1.0
   Bugfixes:
     - Huge thanks to @josephquesnel for fixing the issue where this mod would overwrite productivity research. It now plays nicely and adds its bonus to the research bonus.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.1
+  Bugfixes:
+    - Removed a call to recalculate the list of items to process, as it was causing lag when there was a large amount of items. This shouldn't cause issues, but please let me know if you find anything problematic.
