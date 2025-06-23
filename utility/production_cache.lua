@@ -1,8 +1,7 @@
 -- This module handles the caching of production statistics for progressive productivity.
 -- It provides functionality to refresh production statistics cache in certain situations
 -- and at certain intervals automatically. Subscribers get notified after each refresh.
-
--- TODO: Resolve circular dependency between this cache and the storage by moving the storage to a separate module and require it here, split storage of productivity buff levels and productivity bonuses from the storage of items and fluids
+local storage_module = require("utility.storage_module")
 
 ---Represents the self refreshing cache for production statistics.
 ---@class ProductionStatisticsCache
@@ -46,7 +45,7 @@ local function refresh_production_statistics_cache()
             -- Add all produced items of the current surface to the cache
             local force_surface_item_statistics = force.get_item_production_statistics(surface)
             local force_surface_fluid_statistics = force.get_fluid_production_statistics(surface)
-            for item_name, item in pairs(storage.items) do
+            for item_name, item in pairs(storage.progressive_productivity.items) do
                 if item.type == "item" then
                     item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
                 end

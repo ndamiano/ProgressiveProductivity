@@ -3,38 +3,6 @@ local settings_cache = require("utility.settings_cache")
 local production_cache = require("utility.production_cache")
 local storage_module = require("utility.storage_module")
 
-function setupStorage()
-    local new_items_map = {}
-    local playerForce = game.forces['player']
-    local recipes = playerForce.recipes
-    storage_module.initialize()
-
-    for _, recipe in pairs(recipes) do
-        if recipe.products == nil or recipe.name:match"empty.*barrel" or recipe.name:match".+barrel" then
-            goto continue
-        end
-        if recipe.name:match".*recycling" then
-            goto continue
-        end
-        -- Use settings_cache for consistency
-        if settings_cache.settings.intermediates_only and prototypes.recipe[recipe.name].allowed_effects["productivity"] == false then
-            goto continue
-        end
-        for _, product in pairs(recipe.products) do
-            if new_items_map[product.name] == nil then
-                new_items_map[product.name] = {
-                    recipes = {},
-                    type = product.type
-                }
-            end
-            table.insert(new_items_map[product.name]["recipes"], recipe.name)
-        end
-        ::continue::
-    end
-    storage_module.update_items(new_items_map)
-end
-product_cache.setupStorage = setupStorage
-
 ---@param type string
 ---@param production_amount number
 function calculateProductivityLevel(type, production_amount)
@@ -96,14 +64,12 @@ end
 -- Initialize caches and update research bonuses
 script.on_init(function()
     storage_module.initialize()
-    product_cache.setupStorage()
     update_all_research_bonuses()
 end)
 
 -- Update caches when configuration changes
 script.on_configuration_changed(function()
     storage_module.initialize()
-    product_cache.setupStorage()
     update_all_research_bonuses()
 end)
 

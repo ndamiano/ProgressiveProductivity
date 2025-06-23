@@ -1,4 +1,5 @@
 local production_cache = require "utility.production_cache"
+local product_cache = require "utility.product_cache"
 local gui_module = {}
 
 -- TODO: Add a close button, then change the toggle approach (E and ESC are already taken care off by the game itself)
@@ -32,7 +33,7 @@ local function createProgressiveProductivityUI(player, tick)
         column_count = 5
     })
 
-    for item_name, item in pairs(storage.items) do
+    for item_name, item in pairs(storage.progressive_productivity.items) do
         local tooltip = {"?", {"item-name."..item_name}, {"fluid-name."..item_name}, {"entity-name."..item_name}}
 
         local itemFrame = table.add {
@@ -46,8 +47,8 @@ local function createProgressiveProductivityUI(player, tick)
             sprite = item.type .. "/" .. item_name,
             tooltip = tooltip
         }
-        level = calculateProductivityLevel(item.type, production_cache.production_statistics[player.force.name][item_name])
-        prod_bonus = calculateProductivityAmount(item.type, level)
+        level = product_cache.calculateProductivityLevel(item.type, production_cache.production_statistics[player.force.name][item_name])
+        prod_bonus = product_cache.calculateProductivityAmount(item.type, level)
         itemFrame.add {
             type = "label",
             tooltip = tooltip,

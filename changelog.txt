@@ -63,3 +63,7 @@ Version: 1.1.0
 Version: 1.1.1
   Bugfixes:
     - Removed a call to recalculate the list of items to process, as it was causing lag when there was a large amount of items. This shouldn't cause issues, but please let me know if you find anything problematic.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.2
+  Bugfixes:
+    - Fixed the issue where the mod would not update the list of items properly.
