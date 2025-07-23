@@ -67,3 +67,7 @@ Version: 1.1.1
 Version: 1.1.2
   Bugfixes:
     - Fixed the issue where the mod would not update the list of items properly.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.3
+  Bugfixes:
+    - Fixed an issue when a recipe product didn't have a name it was causing a crash.

@@ -46,11 +46,20 @@ local function refresh_production_statistics_cache()
             local force_surface_item_statistics = force.get_item_production_statistics(surface)
             local force_surface_fluid_statistics = force.get_fluid_production_statistics(surface)
             for item_name, item in pairs(storage.progressive_productivity.items) do
-                if item.type == "item" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
-                end
-                if item.type == "fluid" then
-                    item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_fluid_statistics.get_input_count(item_name)
+                if prototypes[item.type] then
+                    if prototypes[item.type][item_name] then
+                        if item.type == "item" then
+                            item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
+                        end
+                        if item.type == "fluid" then
+                            item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_fluid_statistics.get_input_count(item_name)
+                        end
+                    else
+                        storage.progressive_productivity.items[item_name]=nil
+                        log("item " .. item_name .. " has vanished")
+                    end
+                else
+                    log("no prototypes[" .. item.type .. "] found")
                 end
             end
         end
