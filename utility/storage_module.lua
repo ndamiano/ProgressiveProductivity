@@ -20,13 +20,15 @@ function storage_module.initialize()
                 goto continue
             end
             for _, product in pairs(recipe.products) do
-                if new_items_map[product.name] == nil then
-                    new_items_map[product.name] = {
-                        recipes = {},
-                        type = product.type
-                    }
+                if product.name ~= nil then
+                    if new_items_map[product.name] == nil then
+                        new_items_map[product.name] = {
+                            recipes = {},
+                            type = product.type
+                        }
+                    end
+                    table.insert(new_items_map[product.name]["recipes"], recipe.name)
                 end
-                table.insert(new_items_map[product.name]["recipes"], recipe.name)
             end
             ::continue::
         end
