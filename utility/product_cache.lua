@@ -6,7 +6,6 @@ local storage_module = require("utility.storage_module")
 ---@param type string
 ---@param production_amount number
 function calculateProductivityLevel(type, production_amount)
-    -- Get the number of an item / fluid produced-- Get the amount of an item or fluid produced
     local product_settings = settings_cache.settings[type] --[[@as ProductSettings]]
     local cost = product_settings.cost_base
     local level = 0
@@ -31,19 +30,16 @@ local function are_doubles_equal(a, b, epsilon)
     return math.abs(a - b) < epsilon
 end
 
--- Get cached research bonuses for a force
 function get_research_bonuses_by_recipe(force)
     return storage_module.get_research_bonuses(force.name)
 end
 
--- Update research bonus cache for all forces
 local function update_all_research_bonuses()
     for _, force in pairs(game.forces) do
         update_research_bonuses(force)
     end
 end
 
--- Update research bonus cache for a specific force
 local function update_research_bonuses(force)
     local recipe_bonuses = {}
     for tech_name, technology in pairs(force.technologies) do
@@ -61,19 +57,16 @@ local function update_research_bonuses(force)
     storage_module.update_research_bonuses(force.name, recipe_bonuses)
 end
 
--- Initialize caches and update research bonuses
 script.on_init(function()
     storage_module.initialize()
     update_all_research_bonuses()
 end)
 
--- Update caches when configuration changes
 script.on_configuration_changed(function()
     storage_module.initialize()
     update_all_research_bonuses()
 end)
 
--- Update research bonuses when research completes
 script.on_event(defines.events.on_research_finished, function(event)
     update_research_bonuses(game.forces[event.research.force.name])
 end)
@@ -83,28 +76,36 @@ production_cache.on_production_statistics_may_have_changed(function()
         local force = game.forces[force_name]
         if not force then goto continue_force_loop end
 
-        -- STEP 1: Get cached research bonuses
         local research_bonuses = get_research_bonuses_by_recipe(force)
-            
-        -- STEP 2: Calculate what this mod's bonus *should* be for each recipe.
+
         local should_be_mod_bonuses = {}
+        local item_productivity_levels = storage_module.get_cached_productivity_levels(force_name) or {}
+
         for item_name, production_count in pairs(production_values) do
             if production_count > 0 then
                 local item_data = storage_module.get_items()[item_name]
                 if item_data then
-                    local level = calculateProductivityLevel(item_data.type, production_count)
-                    local mod_bonus = calculateProductivityAmount(item_data.type, level)
-                    for _, recipe_name in pairs(item_data.recipes) do
-                        should_be_mod_bonuses[recipe_name] = math.max(should_be_mod_bonuses[recipe_name] or 0, mod_bonus)
+                    local current_level = calculateProductivityLevel(item_data.type, production_count)
+                    local previous_level = item_productivity_levels[item_name] or 0
+
+                    if current_level ~= previous_level then
+                        -- Store new level
+                        storage_module.update_cached_productivity_level(force_name, item_name, current_level)
+
+                        -- Compute new bonus
+                        local mod_bonus = calculateProductivityAmount(item_data.type, current_level)
+                        for _, recipe_name in pairs(item_data.recipes) do
+                            should_be_mod_bonuses[recipe_name] = math.max(should_be_mod_bonuses[recipe_name] or 0, mod_bonus)
+                        end
                     end
                 end
             end
         end
-        -- STEP 3: Apply the calculations
-        for recipe_name, recipe in pairs(force.recipes) do
-            if recipe.valid and recipe.enabled then
+
+        for recipe_name, mod_bonus in pairs(should_be_mod_bonuses) do
+            local recipe = force.recipes[recipe_name]
+            if recipe and recipe.valid and recipe.enabled then
                 local research_bonus = research_bonuses[recipe_name] or 0
-                local mod_bonus = should_be_mod_bonuses[recipe_name] or 0
                 local prod_bonus = research_bonus + mod_bonus
                 if not are_doubles_equal(recipe.productivity_bonus, prod_bonus) then
                     local display_item_name = {"?", {"item-name."..recipe_name}, {"fluid-name."..recipe_name}, {"entity-name."..recipe_name}, recipe_name}
