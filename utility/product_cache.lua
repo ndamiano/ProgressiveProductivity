@@ -57,10 +57,6 @@ local function update_research_bonuses(force)
     storage_module.update_research_bonuses(force.name, recipe_bonuses)
 end
 
-script.on_event(defines.events.on_research_finished, function(event)
-    update_research_bonuses(game.forces[event.research.force.name])
-end)
-
 production_cache.on_production_statistics_may_have_changed(function()
     for force_name, production_values in pairs(production_cache.production_statistics) do
         local force = game.forces[force_name]

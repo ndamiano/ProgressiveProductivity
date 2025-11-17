@@ -79,13 +79,10 @@ end
 
 --#endregion
 
--- Refresh production statistics cache every 5 seconds
-script.on_nth_tick(300, function(event)
-    -- Refresh the production statistics cache
-    refresh_production_statistics_cache()
-end)
-
 -- Refresh production statistics cache when a force is created
 script.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
+
+-- Make the refresh function available for external calls (like from control.lua)
+production_statistics_cache.refresh_production_statistics_cache = refresh_production_statistics_cache
 
 return production_statistics_cache
