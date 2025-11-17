@@ -1,7 +1,6 @@
 local product_cache = {}
 local settings_cache = require("utility.settings_cache")
 local production_cache = require("utility.production_cache")
-local storage_module = require("utility.storage_module")
 
 ---@param type string
 ---@param production_amount number
@@ -30,10 +29,6 @@ local function are_doubles_equal(a, b, epsilon)
     return math.abs(a - b) < epsilon
 end
 
-function get_research_bonuses_by_recipe(force)
-    return storage_module.get_research_bonuses(force.name)
-end
-
 local function update_all_research_bonuses()
     for _, force in pairs(game.forces) do
         update_research_bonuses(force)
@@ -54,7 +49,7 @@ local function update_research_bonuses(force)
             end
         end
     end
-    storage_module.update_research_bonuses(force.name, recipe_bonuses)
+    storage.progressive_productivity.research_bonuses[force.name] = recipe_bonuses
 end
 
 production_cache.on_production_statistics_may_have_changed(function()
@@ -62,21 +57,23 @@ production_cache.on_production_statistics_may_have_changed(function()
         local force = game.forces[force_name]
         if not force then goto continue_force_loop end
 
-        local research_bonuses = get_research_bonuses_by_recipe(force)
+        local research_bonuses = storage.progressive_productivity.research_bonuses[force.name] or {}
 
         local should_be_mod_bonuses = {}
-        local item_productivity_levels = storage_module.get_cached_productivity_levels(force_name) or {}
+
+        storage.progressive_productivity.productivity_levels[force.name] = 
+            storage.progressive_productivity.productivity_levels[force.name] or {}
+        local item_productivity_levels = storage.progressive_productivity.productivity_levels[force.name]
 
         for item_name, production_count in pairs(production_values) do
             if production_count > 0 then
-                local item_data = storage_module.get_items()[item_name]
+                local item_data = storage.progressive_productivity.items[item_name]
                 if item_data then
                     local current_level = calculateProductivityLevel(item_data.type, production_count)
                     local previous_level = item_productivity_levels[item_name] or 0
 
                     if current_level ~= previous_level then
-                        -- Store new level
-                        storage_module.update_cached_productivity_level(force_name, item_name, current_level)
+                        item_productivity_levels[item_name] = current_level
 
                         -- Compute new bonus
                         local mod_bonus = calculateProductivityAmount(item_data.type, current_level)

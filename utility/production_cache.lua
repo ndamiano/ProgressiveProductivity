@@ -1,7 +1,6 @@
 -- This module handles the caching of production statistics for progressive productivity.
 -- It provides functionality to refresh production statistics cache in certain situations
 -- and at certain intervals automatically. Subscribers get notified after each refresh.
-local storage_module = require("utility.storage_module")
 
 ---Represents the self refreshing cache for production statistics.
 ---@class ProductionStatisticsCache
