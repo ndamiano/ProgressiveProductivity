@@ -55,5 +55,12 @@ data:extend({
 		setting_type = "startup",
 		default_value = true,
 		order = "g"
+	},
+	{
+		type = "bool-setting",
+		name = "progressive-productivity-disable-messages",
+		setting_type = "runtime-global",
+		default_value = false,
+		order = "h"
 	}
 })

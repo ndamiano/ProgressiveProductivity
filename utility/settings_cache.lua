@@ -37,7 +37,8 @@ local settings_cache = {
             cost_multiplier = 0.0,
             productivity_bonus = 0.0
         },
-        intermediates_only = false
+        intermediates_only = false,
+        disable_messages = false
     },
     on_settings_changed = function(subscriber)
         table.insert(settings_changed_subscribers, subscriber)
@@ -61,7 +62,8 @@ local function clone_settings(original_settings)
             cost_multiplier = original_settings.fluid.cost_multiplier,
             productivity_bonus = original_settings.fluid.productivity_bonus
         },
-        intermediates_only = original_settings.intermediates_only
+        intermediates_only = original_settings.intermediates_only,
+        disable_messages = original_settings.disable_messages
     }
 end
 
@@ -98,6 +100,8 @@ local function refresh_settings_cache()
         global_settings["progressive-productivity-fluid-productivity-addition"].value --[[@as double]]
     settings_cache.settings.intermediates_only =
         settings.startup["progressive-productivity-intermediates-only"].value --[[@as boolean]]
+    settings_cache.settings.disable_messages =
+        global_settings["progressive-productivity-disable-messages"].value --[[@as boolean]]
 end
 
 -- Fetch initial values
