@@ -71,3 +71,11 @@ Version: 1.1.2
 Version: 1.1.3
   Bugfixes:
     - Fixed an issue when a recipe product didn't have a name it was causing a crash.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.4
+  Features:
+    - Added productivity level caching to reduce unnecessary recalculations.
+  Bugfixes:
+    - Remove the gui, as the player can use the default factorio one.
+    - Added a map wide toggle for the message popping up when you get more productivity.
+    - Refactored a lot of the internals of the mod. It should be much quicker now, please let me know if you have issues!

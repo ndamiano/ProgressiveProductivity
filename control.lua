@@ -1,6 +1,6 @@
 local settings_cache = require("utility.settings_cache")
 local production_cache = require("utility.production_cache")
-local product_cache = require("utility.product_cache")
+local productivity_manager = require("utility.productivity_manager")
 
 local function initialize_progressive_productivity()
     local new_items_map = {}
@@ -44,5 +44,5 @@ script.on_nth_tick(300, function(event)
 end)
 
 script.on_event(defines.events.on_research_finished, function(event)
-    product_cache.update_research_bonuses(game.forces[event.research.force.name])
+    productivity_manager.update_research_bonuses(game.forces[event.research.force.name])
 end)

@@ -1,10 +1,10 @@
-local product_cache = {}
+local productivity_manager = {}
 local settings_cache = require("utility.settings_cache")
 local production_cache = require("utility.production_cache")
 
 ---@param type string
 ---@param production_amount number
-function calculateProductivityLevel(type, production_amount)
+local function calculateProductivityLevel(type, production_amount)
     local product_settings = settings_cache.settings[type] --[[@as ProductSettings]]
     local cost = product_settings.cost_base
     local level = 0
@@ -14,28 +14,20 @@ function calculateProductivityLevel(type, production_amount)
     end
     return level
 end
-product_cache.calculateProductivityLevel = calculateProductivityLevel
 
 ---@param type string
 ---@param level int
-function calculateProductivityAmount(type, level)
+local function calculateProductivityAmount(type, level)
     local prod_mult = settings_cache.settings[type].productivity_bonus
     return level * prod_mult
 end
-product_cache.calculateProductivityAmount = calculateProductivityAmount
 
 local function are_doubles_equal(a, b, epsilon)
     epsilon = epsilon or 1e-4
     return math.abs(a - b) < epsilon
 end
 
-local function update_all_research_bonuses()
-    for _, force in pairs(game.forces) do
-        update_research_bonuses(force)
-    end
-end
-
-local function update_research_bonuses(force)
+function productivity_manager.update_research_bonuses(force)
     local recipe_bonuses = {}
     for tech_name, technology in pairs(force.technologies) do
         if technology.level > 1 and string.match(technology.name, "-productivity") then
@@ -58,7 +50,6 @@ production_cache.on_production_statistics_may_have_changed(function()
         if not force then goto continue_force_loop end
 
         local research_bonuses = storage.progressive_productivity.research_bonuses[force.name] or {}
-
         local should_be_mod_bonuses = {}
 
         storage.progressive_productivity.productivity_levels[force.name] = 
@@ -75,7 +66,6 @@ production_cache.on_production_statistics_may_have_changed(function()
                     if current_level ~= previous_level then
                         item_productivity_levels[item_name] = current_level
 
-                        -- Compute new bonus
                         local mod_bonus = calculateProductivityAmount(item_data.type, current_level)
                         for _, recipe_name in pairs(item_data.recipes) do
                             should_be_mod_bonuses[recipe_name] = math.max(should_be_mod_bonuses[recipe_name] or 0, mod_bonus)
@@ -104,4 +94,5 @@ production_cache.on_production_statistics_may_have_changed(function()
         ::continue_force_loop::
     end
 end)
-return product_cache
+
+return productivity_manager

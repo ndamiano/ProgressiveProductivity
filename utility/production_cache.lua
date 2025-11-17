@@ -1,87 +1,54 @@
--- This module handles the caching of production statistics for progressive productivity.
--- It provides functionality to refresh production statistics cache in certain situations
--- and at certain intervals automatically. Subscribers get notified after each refresh.
+local production_statistics_cache = {}
 
----Represents the self refreshing cache for production statistics.
----@class ProductionStatisticsCache
----@field production_statistics ProductionStatistics The production statistics for all forces.
----@field on_production_statistics_may_have_changed fun(subscriber: fun()) Registers a subscriber to be notified when the production statistics get refreshed.
+local subscribers = {}
 
----Represents the production statistics for all forces.
----@alias ProductionStatistics Dictionary<ForceProductionStatistics>
+production_statistics_cache.production_statistics = {}
 
----Represents the production statistics for a specific force.
----@class ForceProductionStatistics
----@field item ProductProductionStatistics The item production statistics for a specific force.
----@field fluid ProductProductionStatistics The fluid production statistics for a specific force.
+function production_statistics_cache.on_production_statistics_may_have_changed(subscriber)
+    table.insert(subscribers, subscriber)
+end
 
----Represents the production statistics for a specific product type.
----@alias ProductProductionStatistics Dictionary<number>
-
---- List of subscribers to notify when production statistics may have changed
----@type Array<fun()>
-local production_statistics_changed_subscribers = {}
-
----@type ProductionStatisticsCache
-local production_statistics_cache = {
-    production_statistics = {},
-    on_production_statistics_may_have_changed = function(subscriber)
-        table.insert(production_statistics_changed_subscribers, subscriber)
-    end
-}
---#region Helper functions
-
----Refreshes the production statistics cache
 local function refresh_production_statistics_cache()
-    -- Create a new cache for the production statistics
-    ---@type Dictionary<ForceProductionStatistics>
     local new_production_statistics = {}
 
     for force_name, force in pairs(game.forces) do
-        local item_statistics = {} ---@type ProductProductionStatistics
+        local item_statistics = {}
 
         for surface, _ in pairs(game.surfaces) do
-            -- Add all produced items of the current surface to the cache
-            local force_surface_item_statistics = force.get_item_production_statistics(surface)
-            local force_surface_fluid_statistics = force.get_fluid_production_statistics(surface)
-            for item_name, item in pairs(storage.progressive_productivity.items) do
-                if prototypes[item.type] then
-                    if prototypes[item.type][item_name] then
-                        if item.type == "item" then
-                            item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_item_statistics.get_input_count(item_name)
-                        end
-                        if item.type == "fluid" then
-                            item_statistics[item_name] = (item_statistics[item_name] or 0) + force_surface_fluid_statistics.get_input_count(item_name)
-                        end
-                    else
-                        storage.progressive_productivity.items[item_name]=nil
-                        log("item " .. item_name .. " has vanished")
-                    end
-                else
-                    log("no prototypes[" .. item.type .. "] found")
+            local item_stats = force.get_item_production_statistics(surface)
+            local fluid_stats = force.get_fluid_production_statistics(surface)
+            
+            for item_name, item_data in pairs(storage.progressive_productivity.items) do
+                local prototype_category = prototypes[item_data.type]
+                if not prototype_category then
+                    log("no prototypes[" .. item_data.type .. "] found")
+                    goto continue_item
                 end
+                
+                if not prototype_category[item_name] then
+                    storage.progressive_productivity.items[item_name] = nil
+                    log("item " .. item_name .. " has vanished")
+                    goto continue_item
+                end
+
+                local stats = item_data.type == "item" and item_stats or fluid_stats
+                item_statistics[item_name] = (item_statistics[item_name] or 0) + stats.get_input_count(item_name)
+                
+                ::continue_item::
             end
         end
-        -- Add the forces current production statistics to the new cache
+        
         new_production_statistics[force_name] = item_statistics
     end
 
-    -- Replace the old cache with the new one
     production_statistics_cache.production_statistics = new_production_statistics
 
-    -- TODO: Consider notifying subscribers for changed production statistics on a per item/fluid basis (cleaner? simpler? easier to debug? or just more overhead?)
-    -- Notify the subscribers that the production statistics may have changed
-    for _, subscriber in ipairs(production_statistics_changed_subscribers) do
+    for _, subscriber in ipairs(subscribers) do
         subscriber()
     end
 end
 
---#endregion
-
--- Refresh production statistics cache when a force is created
 script.on_event(defines.events.on_force_created, refresh_production_statistics_cache)
-
--- Make the refresh function available for external calls (like from control.lua)
 production_statistics_cache.refresh_production_statistics_cache = refresh_production_statistics_cache
 
 return production_statistics_cache
