@@ -56,7 +56,7 @@ local function refresh_production_statistics_cache()
 
                 if  item_data.type == "item" then
                     for _, q in pairs(unlocked_qualities) do
-                        item_statistics[item_name] = (item_statistics[item_name] or 0) + force.get_item_production_statistics(surface).get_input_count({name = item_name, quality = q})
+                        item_statistics[item_name] = (item_statistics[item_name] or 0) + item_stats.get_input_count({name = item_name, quality = q})
                     end
                     goto continue_item
                 end
