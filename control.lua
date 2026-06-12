@@ -40,9 +40,14 @@ script.on_configuration_changed(initialize_progressive_productivity)
 script.on_init(initialize_progressive_productivity)
 
 script.on_nth_tick(300, function(event)
-   production_cache.refresh_production_statistics_cache()
+   production_cache.schedule_refresh()
 end)
 
 script.on_event(defines.events.on_research_finished, function(event)
     productivity_manager.update_research_bonuses(game.forces[event.research.force.name])
+end)
+
+commands.add_command("pp-dump", nil, function()
+    helpers.write_file("pp-stats.json",
+        helpers.table_to_json(production_statistics_cache.production_statistics), false)
 end)

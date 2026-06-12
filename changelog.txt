@@ -79,3 +79,7 @@ Version: 1.1.4
     - Remove the gui, as the player can use the default factorio one.
     - Added a map wide toggle for the message popping up when you get more productivity.
     - Refactored a lot of the internals of the mod. It should be much quicker now, please let me know if you have issues!
+---------------------------------------------------------------------------------------------------
+Version: 1.1.5
+  Optimizations:
+    - Production statistics are now refreshed incrementally over many ticks instead of all at once, hopefully eliminating the periodic stutter on large saves (~2.1ms spikes reduced to ~0.06ms steady).
