@@ -83,3 +83,10 @@ Version: 1.1.4
 Version: 1.1.5
   Optimizations:
     - Production statistics are now refreshed incrementally over many ticks instead of all at once, hopefully eliminating the periodic stutter on large saves (~2.1ms spikes reduced to ~0.06ms steady).
+---------------------------------------------------------------------------------------------------
+Version: 1.1.6
+  Features:
+    - Updated mod metadata to target Factorio 2.1 (`factorio_version = 2.1`, `base >= 2.1.0`).
+  Bugfixes:
+    - Fixed `/pp-dump` to export the production cache correctly.
+    - Updated recipe productivity filtering to use `allow_productivity` for Factorio 2.1 compatibility.
