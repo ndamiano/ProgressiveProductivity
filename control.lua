@@ -14,7 +14,8 @@ local function initialize_progressive_productivity()
         if recipe.name:match".*recycling" then
             goto continue
         end
-        if settings_cache.settings.intermediates_only and prototypes.recipe[recipe.name].allowed_effects["productivity"] == false then
+        local recipe_prototype = prototypes.recipe[recipe.name]
+        if settings_cache.settings.intermediates_only and (not recipe_prototype or recipe_prototype.allow_productivity == false) then
             goto continue
         end
         for _, product in pairs(recipe.products) do
@@ -49,5 +50,5 @@ end)
 
 commands.add_command("pp-dump", nil, function()
     helpers.write_file("pp-stats.json",
-        helpers.table_to_json(production_statistics_cache.production_statistics), false)
+        helpers.table_to_json(production_cache.production_statistics), false)
 end)
