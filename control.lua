@@ -14,8 +14,8 @@ local function initialize_progressive_productivity()
         if recipe.name:match".*recycling" then
             goto continue
         end
-        local recipe_prototype = prototypes.recipe[recipe.name]
-        if settings_cache.settings.intermediates_only and (not recipe_prototype or recipe_prototype.allow_productivity == false) then
+        local allowed_effects = recipe.prototype.allowed_effects
+        if settings_cache.settings.intermediates_only and not (allowed_effects and allowed_effects["productivity"]) then
             goto continue
         end
         for _, product in pairs(recipe.products) do

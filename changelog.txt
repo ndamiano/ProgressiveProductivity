@@ -86,7 +86,6 @@ Version: 1.1.5
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.6
   Features:
-    - Updated mod metadata to target Factorio 2.1 (`factorio_version = 2.1`, `base >= 2.1.0`).
+    - Updated for Factorio 2.1.
   Bugfixes:
-    - Fixed `/pp-dump` to export the production cache correctly.
-    - Updated recipe productivity filtering to use `allow_productivity` for Factorio 2.1 compatibility.
+    - Fixed /pp-dump to export the production cache correctly.
